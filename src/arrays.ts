@@ -158,6 +158,26 @@ export function join(...arrays: any[][]) {
   return arrays.reduce((a, x) => a.concat(x), []);
 }
 
+/**
+ * Allows filtering and mapping over an array in a single step.
+ * Returns a list of processed values from `items` for which
+ * `predicate` returns a non-null value.
+ * @param {Iterable<InputType>} items - A collection of values to process
+ * @param {(item: InputType) => ReturnType|undefined} predicate - A function which conditionally processes each element of `items`, returning the processed result on success and `undefined` on failure
+ * @returns {Iterable<ReturnType>} Collection of sucess result values
+ * @example
+ * // Returns a list of all numerical (non-null) results
+ * // of running a function `fibonacci` on members of `items`:
+ * const fibs = filterMap(numbers, fibonacci);
+ * // This is equivalent to:
+ * const fibs = numbers.map(fibonacci).filter(result => result != undefined);
+ */
+export function* filterMap<InputType, ReturnType>(items: Iterable<InputType>, predicate: (item: InputType) => ReturnType|undefined): Iterable<ReturnType> {
+  for (const item of items) {
+    const result = predicate(item);
+    if (result !== undefined) yield result;
+  }
+}
 
 export interface LinkedListItem<T> {
   val: T;
